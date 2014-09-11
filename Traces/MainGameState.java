@@ -11,6 +11,7 @@ import Engine.RedText;
 import Engine.RedTimer;
 import java.awt.Color;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -105,9 +106,9 @@ public class MainGameState extends RedGroup {
 			try {
 				saver = new RedSave("./.save");
 				
-			saver.saveFile.write((int) (timer * 100));
-			saver.saveFile.write((int) (Traces.record * 100));
-			saver.close();
+				saver.saveFile.write( ByteBuffer.wrap(new byte[8]).putDouble(timer).array());
+				saver.saveFile.write(ByteBuffer.wrap(new byte[8]).putDouble(Traces.record).array());
+				saver.close();
 			} catch (IOException ex) {
 				Logger.getLogger(MainGameState.class.getName()).log(Level.SEVERE, null, ex);
 			}

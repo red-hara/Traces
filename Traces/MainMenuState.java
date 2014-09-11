@@ -9,6 +9,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,10 +33,13 @@ public class MainMenuState extends RedGroup {
 		}
         if (loader != null) {
 			try {
-				double last = loader.loadFile.read();
-				Traces.record = loader.loadFile.read();
-				recordText.text = "Best time is: " + String.valueOf(((double) Math.round(Traces.record)) / 100);
-				recordText.text += "\nLast time is: " + String.valueOf(((double) Math.round(last)) / 100);
+				byte[] readed = new byte[8];
+				loader.loadFile.read(readed);
+				double last = ByteBuffer.wrap(readed).getDouble();
+				loader.loadFile.read(readed);
+				Traces.record = ByteBuffer.wrap(readed).getDouble();
+				recordText.text = "Best time is: " + String.valueOf(((double) Math.round(Traces.record * 100)) / 100);
+				recordText.text += "\nLast time is: " + String.valueOf(((double) Math.round(last * 100)) / 100);
 				loader.close();
 			} catch (IOException ex) {
 				Logger.getLogger(MainMenuState.class.getName()).log(Level.SEVERE, null, ex);
